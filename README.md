@@ -30,13 +30,13 @@ This demo complements the blog post [Adding Real Time Analytics to a Supabase Ap
 ### 2. Installation
 
 ```bash
-git clone git@github.com:ClickHouse/house-prices.git
+git clone git@github.com:ClickHouse/HouseClick.git
 # setup script dependencies
 cd scripts
 # optionally create a virutal env e.g. virtualenv -p python3 .venv && source .venv
 pip install -r requirements.txt
 # Install frontend
-cd ../house-click
+cd ../HouseClick
 yarn install
 ```
 
@@ -229,9 +229,9 @@ export SUPABASE_PRIVATE_KEY=write_key
 python scripts/import_data.py
 ```
 
-# 7. Running in Development mode
+### 7. Running in Development mode
 
-From the `house-click` directory.
+From the `HouseClick` directory.
 
 **Important:** The Supabase key here should be the [anon key](https://supabase.com/docs/guides/api/api-keys. You should ensure row access security is configured and this key has only read access to the `uk_house_listings` table.
 
