@@ -1,0 +1,77 @@
+.dark {
+  --clickhouse-color-1: 47, 44, 58;
+  --clickhouse-color-2: 55, 51, 67;
+  --clickhouse-color-4: 176, 180, 188;
+  --clickhouse-color-5: 255, 255, 255;
+  --clickhouse-color-7: 255, 193, 51;
+  --headerBg: 47, 44, 58;
+  --bg1: #2f2c3a;
+  --bg2: #373343;
+  --bg3: #443f51;
+  --bg4: #373343;
+  --bg5: #585267;
+  --bg6: #12101b;
+  --bg7: #443f51;
+  --bg8: #373343;
+  --fg1: #ffffff;
+  --fg2: #443f51;
+  --fg3: #b0b4bc;
+  --fg4: #ffffff;
+  --fg5: #b0b4bc;
+
+  --primary: #ffb200;
+  --primaryLink: #ffb200;
+  --primaryCode: #ffb200;
+  --warningBg: #ffefca;
+  --warningFg: #c78f0f;
+  --gradient1: #37334300;
+  --gradient2: #373343;
+  --constWhite: #ffffff;
+  --constDark: #222222;
+  --constPrimaryButtonText: #4b2a04;
+
+  --seedSelectBg: #2f2c3a;
+  --seedSelectHoverBG: #373343;
+  --seedSelectBorder: rgba(176, 180, 188, 0.1);
+
+  --advancedCalloutBG: #373343;
+}
+
+.light {
+  --clickhouse-color-1: 255, 255, 255;
+  --clickhouse-color-2: 246, 247, 250;
+  --clickhouse-color-4: 109, 115, 134;
+  --clickhouse-color-5: 47, 44, 58;
+  --clickhouse-color-7: 166, 119, 13;
+  --headerBg: 255, 255, 255;
+  --bg1: #ffffff;
+  --bg2: #f6f7fa;
+  --bg3: #443f51;
+  --bg4: #373343;
+  --bg5: #585267;
+  --bg6: #efeff2;
+  --bg7: rgba(109, 115, 134, 0.1);
+  --bg8: #fafbfd;
+  --fg1: #2f2c3a;
+  --fg2: #ffffff;
+  --fg3: #6d7386;
+  --fg4: #ffffff;
+  --fg5: #f6f7fa;
+
+  --primary: #ffb200;
+  --primaryLink: #c78f0f;
+  --primaryCode: #6d7386;
+  --warningBg: #ffefca;
+  --warningFg: #c78f0f;
+  --gradient1: #f6f7fa00;
+  --gradient2: #f6f7fa;
+  --constWhite: #ffffff;
+  --constDark: #222222;
+  --constPrimaryButtonText: #4b2a04;
+
+  --seedSelectBg: #ffffff;
+  --seedSelectHoverBG: #f6f7fa;
+  --seedSelectBorder: rgba(109, 115, 134, 0.1);
+
+  --advancedCalloutBG: #ffffff;
+}
