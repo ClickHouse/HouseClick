@@ -10,7 +10,7 @@ This demo complements the blog post [Adding Real Time Analytics to a Supabase Ap
 - The code has no tests and comments are currently minimal - although the code is very simple. 
 - Rough and ready. Use for inspiration only. 
 - PRs welcome to improve the code.
-- Due to concerns regards image writes, we do not generate a dataset. Steps to generate are included.
+- Due to concerns regards image writes, we do not provide a generated dataset. Steps to generate are included.
 - This requires the [Foreign Data Wrapper](https://supabase.github.io/wrappers/clickhouse/) (FDW) for ClickHouse to be available in Supabase.
 
 ![House Click](./house_click.png)
