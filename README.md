@@ -7,15 +7,15 @@ This demo complements the blog post [Adding Real Time Analytics to a Supabase Ap
 **Important**
 
 - This is a demo only. 
-- The code has no tests. 
-- Minimal code comments. 
-- Rough and ready. 
-- Use for inspiration only. 
+- The code has no tests and comments are currently minimal - although the code is very simple. 
+- Rough and ready. Use for inspiration only. 
 - PRs welcome to improve the code.
 - Due to concerns regards image writes, we do not generate a dataset. Steps to generate are included.
-- This requires the Foreign Data Wrapper (FDW) for ClickHouse to be available in Supabase.
+- This requires the [Foreign Data Wrapper](https://supabase.github.io/wrappers/clickhouse/) (FDW) for ClickHouse to be available in Supabase.
 
 ![House Click](./house_click.png)
+
+![House Click Search](./house_click_search.png)
 
 ## Setup
 
@@ -24,7 +24,7 @@ This demo complements the blog post [Adding Real Time Analytics to a Supabase Ap
 - Python 3.10+ - for data generation scripts
 - Node v16.15.1+
 - Yarn 1.22.19
-- Supabase (free tier is sufficient) account or local instance. You will need Foreign Data Wrappers enabled on this instance.
+- Supabase (free tier is sufficient) account or local instance. You will need [Foreign Data Wrapper](https://supabase.github.io/wrappers/clickhouse/)  enabled on this instance.
 - OpenAPI key. $10 free credit is sufficient to generate 1000 properties. This is used to generated property descriptions.
 
 ### 2. Installation
@@ -215,9 +215,9 @@ server clickhouse_server
 ```
 
 
-### 5. Loading data into Supabase
+### 6. Loading data into Supabase
 
-We will need a Supabase account (free tier is sufficient) or instance. Ensure you have a use Project API keys for this step which have write access. 
+We will need a Supabase account (free tier is sufficient) or instance. Ensure you use a [Project API keys](https://supabase.com/docs/guides/api/api-keys) for this step which have write access. 
 The data should of been generated in the previous step and be present in the base directory as `house_prices.csv`.
 
 From the base directory:
@@ -229,19 +229,19 @@ export SUPABASE_PRIVATE_KEY=write_key
 python scripts/import_data.py
 ```
 
-# 6. Running in Development mode
+# 7. Running in Development mode
 
 From the `house-click` directory.
 
-**Important:** The Supabase key here should be the anonymous key. You should ensure row access security is configured and this key has only read access to the `uk_house_listings` table.
+**Important:** The Supabase key here should be the [anon key](https://supabase.com/docs/guides/api/api-keys. You should ensure row access security is configured and this key has only read access to the `uk_house_listings` table.
 
 ```bash
 export CLICKHOUSE_HOST=http://localhost:8123
 export CLICKHOUSE_USER=default
 export CLICKHOUSE_PASSWORD=password
 
-export SUPABASE_URL=url
-export SUPABASE_ANON_KEY=anon_key
+export NEXT_PUBLIC_SUPABASE_URL=url
+export NEXT_PUBLIC_SUPABASE_ANON_KEY=anon_key
 
 yarn dev
 ```

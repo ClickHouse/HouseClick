@@ -7,7 +7,7 @@ const clickhouse = createClient({
     password: process.env.CLICKHOUSE_PASSWORD ?? '',
 })
 
-const supabase = createSupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)
+const supabase = createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_KEY)
 
 const filter_config = {
     'postcode': {
