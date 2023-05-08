@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 
-const supabase = createClient('https://sfzygnnbtbttbtpiczck.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNmenlnbm5idGJ0dGJ0cGljemNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODIwNzYzNDUsImV4cCI6MTk5NzY1MjM0NX0.DKpch_SPtSpCkvM1Fot-STxwVtvy8zQ_eksujLZAJMg')
+const supabase = createClient('', '')
 
 const table = 'uk_house_listings'
 
