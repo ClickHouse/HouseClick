@@ -42,7 +42,7 @@ python-semantic-release==7.33.2
 pytz==2023.3
 readme-renderer==37.3
 realtime==1.0.0
-requests==2.28.2
+requests==2.31.0
 requests-toolbelt==0.10.1
 rfc3986==1.5.0
 semver==2.13.0
