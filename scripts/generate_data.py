@@ -13,11 +13,13 @@ client = clickhouse_connect.get_client(host=os.getenv("CLICKHOUSE_HOST", "localh
                                        port=int(os.getenv("CLICKHOUSE_PORT", 8123)),
                                        username=os.getenv("CLICKHOUSE_USER", "default"),
                                        password=os.getenv("CLICKHOUSE_PASSWORD", ""),
-                                       interface=os.getenv("CLICKHOUSE_PROTO", "http"))
+                                       interface=os.getenv("CLICKHOUSE_PROTO", "http"),
+                                       secure=True,
+    verify=False)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 max_variance = 0.05
 new_percent = 0.05
-num_properties = 1000
+num_properties = 10
 
 
 def random_date(end_date, num_days=90):
@@ -68,42 +70,54 @@ def num_bedrooms(house_type, price, area):
 
 
 def get_description(query):
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Write a short description to sell a {query}",
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": "You are a helpful assistant."},
+                  {"role": "user", "content": f"Write a short description to sell a {query}"}],
         temperature=0.4,
         max_tokens=300,
         top_p=1,
         frequency_penalty=0.5,
         presence_penalty=0.2,
     )
-    return response.choices[0].text
+    return response.choices[0].message.content
 
 
 def get_title(query):
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Write a short title to sell a {query}",
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": "You are a helpful assistant."},
+                  {"role": "user", "content": f"Write a short title to sell a {query}"}],
         temperature=0.4,
         max_tokens=150,
         top_p=1,
         frequency_penalty=1,
-        presence_penalty=0.2
+        presence_penalty=0.2,
     )
-    return response.choices[0].text
+    return response.choices[0].message.content
 
 
 def get_features(query):
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Write me a list of features to sell a {query}",
+    response = openai.ChatCompletion.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "system", "content": "You are a helpful assistant."},
+                  {"role": "user", "content": f"Write me a list of features to sell a {query}"}],
         temperature=0.4,
         max_tokens=400,
         top_p=1,
         frequency_penalty=0.5,
-        presence_penalty=0.2
+        presence_penalty=0.2,
     )
-    return response.choices[0].text
+    return response.choices[0].message.content
+
+def get_image(description):
+    response = openai.Image.create(
+        prompt=f"Generate an image of a {description}",
+        n=1,  # Number of images to generate
+        size="1024x1024",  # Image dimensions
+    )
+    print(response)
+    return response.data[0].url
 
 
 c = 0
@@ -112,11 +126,11 @@ with open('house_prices.csv', 'w') as house_price_file:
     csvwriter.writerow(['id'] + fields + ['rooms', 'title', 'description', 'features', 'urls', 'sold', 'sold_date'])
     for i in range(num_properties):
         # select address at random (with postcode)
-        result = client.query(f"select {','.join(fields)} FROM uk_price_paid WHERE postcode1 != '' AND postcode2 != '' "
+        result = client.query(f"select {','.join(fields)} FROM uk.uk_price_paid WHERE postcode1 != '' AND postcode2 != '' "
                               f"AND type != 'other' ORDER BY rand() DESC LIMIT 1")
         house = result.first_row
         # find avg increase since last time sold for area
-        stats = client.query(f"SELECT round(median(price)) FROM uk_price_paid WHERE postcode1 = '{house[8]}' "
+        stats = client.query(f"SELECT round(median(price)) FROM uk.uk_price_paid WHERE postcode1 = '{house[8]}' "
                              f"AND duration = '{house[11]}' AND type='{house[10]}' AND date > '2022-01-01'")
         var = random.uniform(0, max_variance) * (1 if bool(random.getrandbits(1)) else -1)
         # increase price
@@ -133,7 +147,8 @@ with open('house_prices.csv', 'w') as house_price_file:
             features = get_features(query).strip()
             t_query = f"{rooms}-bedroom {house_type} {'' if house_type == 'flat' else 'house'} in {town}, {house[6]}, UK'"
             title = get_title(t_query).strip()
-            images = bing.get_links()
+            images = get_image(title)
+            # images = bing.get_links()
             sold = False if random.random() < 0.8 else True
             sold_date = ''
             if sold:
