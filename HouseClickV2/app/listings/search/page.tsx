@@ -73,7 +73,7 @@ function parseParams(
 
 // Helper function to parse integer with range checking
 function parseIntWithRange(min: number | undefined, max: number | undefined, value: string, defaultValue: number | undefined): number {
-  let i = parseInt(value);
+  const i = parseInt(value);
   if (min && max && !isNaN(i) && i > min && i < max) {
     return i;
   }
@@ -83,7 +83,7 @@ function parseIntWithRange(min: number | undefined, max: number | undefined, val
 export default async function SearchPage({
   searchParams
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: any;
 }) {
   const queryState = parseParams(await searchParams);
   // Get initial results

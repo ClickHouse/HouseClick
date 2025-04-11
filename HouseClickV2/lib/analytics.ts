@@ -268,9 +268,9 @@ async function price_increases(condition: string) {
 
     const years = [10, 5, 3, 1].filter(len => (data.length >= (len + 1)) && data[data.length - (len + 1)].filter_avg !== undefined)
     const increases = years.map(year => {
-        let len = year + 1
-        let national = data[data.length - len].avg
-        let filter = data[data.length - len].filter_avg
+        const len = year + 1
+        const national = data[data.length - len].avg
+        const filter = data[data.length - len].filter_avg
         return {
             'year': year,
             'national': national > 0 ? Math.round((n - national) / national * 100) : 0,

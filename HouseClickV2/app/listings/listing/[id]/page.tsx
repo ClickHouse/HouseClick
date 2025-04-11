@@ -1,7 +1,5 @@
 
 import { getListing } from "@/lib/db";
-import { getAnalytics } from "@/lib/analytics";
-// import Analytics from "../../../components/analytics";
 import Link from "next/link";
 import ListingDetails from "@/components/ListingDetails";
 import ListingAnalytics from "@/components/ListingAnalytics";

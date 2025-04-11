@@ -42,7 +42,7 @@ export default function FilterPanel({
                       checked={option.checked}
                       value={option.value}
                       className="h-4 w-4 rounded border-gray-300 text-primary-300 focus:ring-indigo-500"
-                      onChange={(_) => onCheckFilter(filter.id, optionIdx)}
+                      onChange={() => onCheckFilter(filter.id, optionIdx)}
                     />
                     <label
                       htmlFor={`${filter.id}-${optionIdx}`}

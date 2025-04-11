@@ -251,14 +251,14 @@ export default function Analytics({ filters }: AnalyticsProps) {
                                                         type: "category",
                                                         data: ["Number Sold"],
                                                     },
-                                                    series: data.sold_by_period.map((period, i) => {
+                                                    series: data.sold_by_period.map((period: {name: string, value: string}, i: number) => {
                                                         return {
                                                             name: period.name,
                                                             type: "bar",
                                                             stack: "total",
                                                             label: {
                                                                 show: true,
-                                                                formatter: function (d) {
+                                                                formatter: function (d: any) {
                                                                     return `last ${d.seriesName}`;
                                                                 },
                                                             },
@@ -267,12 +267,12 @@ export default function Analytics({ filters }: AnalyticsProps) {
                                                             },
                                                             data: [period.value],
                                                             tooltip: {
-                                                                valueFormatter: function (d) {
+                                                                valueFormatter: function () {
                                                                     return data.sold_by_period
                                                                         .slice(0, i + 1)
-                                                                        .map((period) => period.value)
+                                                                        .map((period: {name: string, value: string}) => period.value)
                                                                         .reduce(
-                                                                            (partialSum, a) => partialSum + a,
+                                                                            (partialSum: number, a: number) => partialSum + a,
                                                                             0
                                                                         );
                                                                 },

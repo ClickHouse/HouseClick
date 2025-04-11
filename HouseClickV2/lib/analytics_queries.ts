@@ -1,4 +1,5 @@
 
+/* eslint-disable */
 export const postgreSQLQueries: Record<string, Function> = {
     salesOverTime: (condition: string, column: string) => `SELECT
                         DATE_TRUNC('year', date) AS qtr,
@@ -95,7 +96,7 @@ export const clickHouseQueries: Record<string, Function> = {
                     toStartOfYear(date) AS qtr,
                     toInt32(countIf(${condition})) AS filtered_count,
                     toInt32(round(count()/uniq(${column}))) AS count
-                FROM uk_price_paid
+                FROM uk.uk_price_paid
                 GROUP BY qtr
                 ORDER BY qtr ASC`,
     priceOverTime: (condition: string) => `SELECT

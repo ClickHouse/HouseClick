@@ -1,6 +1,6 @@
 'use server';
 
-import { SearchParams, Listing } from "@/lib/types";
+import { SearchParams } from "@/lib/types";
 import { search } from "@/lib/db";
 
 export async function searchListings(query: SearchParams) {

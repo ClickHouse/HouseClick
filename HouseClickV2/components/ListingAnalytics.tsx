@@ -1,6 +1,6 @@
 "use client";
 
-import { Disclosure, Tab } from "@headlessui/react";
+import { Disclosure } from "@headlessui/react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Listing } from "@/lib/types";
 import Analytics from "@/components/Analytics";

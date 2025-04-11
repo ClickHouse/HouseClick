@@ -1,10 +1,6 @@
 'use client;'
-import { Dialog, Popover, Tab, Transition } from "@headlessui/react";
 import {
-  Bars3Icon,
   MagnifyingGlassIcon,
-  QuestionMarkCircleIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,10 +27,6 @@ const navigation: { categories: Category[]; pages: Page[] } = {
   ],
   pages: [{ name: "Company", href: "/" }],
 };
-
-function classNames(...classes: (string | boolean)[]): string {
-  return classes.filter(Boolean).join(" ");
-}
 
 export default function Header() {
 

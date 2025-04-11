@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { SearchFilter, SortItem, SearchResults, QueryState } from "@/lib/types";
-import { filterConfig, sortItems } from "@/lib/searchConfig";
+import { useRouter, usePathname } from "next/navigation";
+import { SearchFilter, SearchResults, QueryState } from "@/lib/types";
 import SearchBar from "./SearchBar";
 import FilterPanel from "./FilterPanel";
 import ListingGrid from "./ListingGrid";
@@ -19,7 +18,6 @@ interface SearchResultsProps {
 export default function SearchResultsPanel({ initialState, initialResults }: SearchResultsProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   
   const [isLoading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<SearchResults>(initialResults || { results: [], count: 0 });
@@ -162,13 +160,13 @@ export default function SearchResultsPanel({ initialState, initialResults }: Sea
     });
   };
 
-  const handleSort = (sort: SortItem): void => {
-    setQuery({
-      ...query,
-      sort,
-      page: 1,
-    });
-  };
+  // const handleSort = (sort: SortItem): void => {
+  //   setQuery({
+  //     ...query,
+  //     sort,
+  //     page: 1,
+  //   });
+  // };
 
   const handlePageChange = (page: number): void => {
     setQuery({

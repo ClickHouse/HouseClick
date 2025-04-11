@@ -77,8 +77,8 @@ export async function getDefaultListings(limit: number = 12): Promise<Listing[]>
 
 
 function applyFilters(filters: SearchFilter[], startIndex: number) {
-  let conditions: string[] = [];
-  let values: any[] = [];
+  const conditions: string[] = [];
+  const values: any[] = [];
   let index = startIndex;
 
   filters.forEach(filter => {
@@ -113,9 +113,9 @@ export const getPagination = (page: number, size: number) => {
 }
 
 export async function search(query: SearchParams) {
-  const { from, to } = getPagination(query.page - 1, 9);
+  const { from } = getPagination(query.page - 1, 9);
   let baseQuery = `SELECT id, type, price, town, district, postcode1, postcode2, duration, date, urls, description, title, rooms, sold FROM uk_house_listings`;
-  let conditions = [];
+  const conditions = [];
   let values = [];
   if (query.searchTerm !== '') {
     conditions.push(`to_tsvector(title || ' ' || description) @@ to_tsquery($1)`);
