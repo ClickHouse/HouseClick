@@ -7,8 +7,20 @@ interface SignedUrlResult {
   expiry: number;
 }
 
+// Server-side cache
+const urlCache = new Map<string, SignedUrlResult>();
+
 export async function getSignedImageUrl(filename: string): Promise<SignedUrlResult> {
   try {
+
+    // Check server-side cache first
+    const cached = urlCache.get(filename);
+    const now = Date.now();
+    
+    // Use cached URL if it exists and not close to expiring (with 1-minute buffer)
+    if (cached && cached.expiry > now) {
+        return cached;
+    }
     const storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
       credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY || '{}'),
@@ -35,12 +47,17 @@ export async function getSignedImageUrl(filename: string): Promise<SignedUrlResu
       action: 'read',
       expires: expiryTime,
     });
-    
-    return { 
-      url: signedUrl,
-      expiry: expiryTime
+
+    const result = { 
+        url: signedUrl,
+        expiry: expiryTime
     };
     
+    // Update the server-side cache
+    urlCache.set(filename, result);
+
+    return result;
+
   } catch (error) {
     console.error('Error generating signed URL:', error);
     throw new Error('Failed to generate signed URL');
