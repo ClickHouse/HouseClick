@@ -4,7 +4,7 @@ import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Listing } from "@/lib/types";
 import { Disclosure, Tab } from "@headlessui/react";
 import ReactMarkdown from 'react-markdown';
-import Image from "next/image";
+import GcsImage from "./GCSImage";
 
 
 function classNames(...classes: (string | boolean | undefined | null)[]): string {
@@ -28,8 +28,8 @@ export default function ListingDetails(listing: Listing) {
                                     <>
                                         <span className="sr-only"> {image.name} </span>
                                         <span className="absolute inset-0 overflow-hidden rounded-md">
-                                            <Image
-                                                src={image.src}
+                                            <GcsImage
+                                                filename={image.src}
                                                 width={204}
                                                 height={41}
                                                 alt=""
@@ -53,10 +53,10 @@ export default function ListingDetails(listing: Listing) {
                 <Tab.Panels className="aspect-h-1 aspect-w-1 w-full">
                     {listing.images?.map((image) => (
                         <Tab.Panel key={image.id}>
-                            <Image
+                            <GcsImage
                                 width={204}
                                 height={41}
-                                src={image.src}
+                                filename={image.src}
                                 alt={image.alt}
                                 className="h-full w-full object-cover object-center sm:rounded-lg"
                             />

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FaBed } from "react-icons/fa";
 import type { Listing } from "@/lib/types";
 import ReactMarkdown from 'react-markdown';
-import Image from "next/image";
+import GcsImage from "./GCSImage";
 
 interface ListingGridProps {
   listings: Listing[];
@@ -50,10 +50,10 @@ export default function ListingGrid({ listings, isLoading }: ListingGridProps) {
         >
           <Link href={`/listings/listing/${listing.id}`}>
             <div className="aspect-h-3 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-52">
-              <Image
+              <GcsImage
                 width={204}
                 height={41}
-                src={listing.urls[0]}
+                filename={listing.urls[0]}
                 alt={listing.title}
                 className="h-full w-full object-cover object-center sm:h-full sm:w-full"
               />

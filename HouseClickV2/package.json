@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clickhouse/client": "^1.11.0",
+    "@google-cloud/storage": "^7.16.0",
     "@headlessui/react": "^0.0.0-insiders.51775d2",
     "@heroicons/react": "^2.0.17",
     "@types/pg": "^8.11.11",
