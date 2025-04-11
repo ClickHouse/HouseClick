@@ -214,7 +214,6 @@ server clickhouse_server
 
 ```
 
-
 ### 6. Loading data into Supabase
 
 We will need a Supabase account (free tier is sufficient) or instance. Ensure you use a [Project API keys](https://supabase.com/docs/guides/api/api-keys) for this step which have write access. 
