@@ -1,20 +1,36 @@
 # HouseClick repository
 
-HouseClick demo application  repository. 
+HouseClick demo application repository. 
+
+This is V2 of the demo. For the earlier version, see the [archive](archive) directory.
+
+**Important**
+
+- This is a demo only. 
+- The code has no tests and comments are currently minimal - although the code is very simple. 
+- Rough and ready. Use for inspiration only. 
+- PRs welcome to improve the code.
+- Due to concerns regards image writes, we do not provide a generated dataset. Steps to generate are included.
+
+![House Click](./house_click.png)
 
 # Requirements
 
-- Postgres DB
-- ClickHouse 
-- Anthropic API Key 
-- ClickHouse MCP Server
-- NodeJS 20+
+Before starting, make sure you have:
 
-# Prepare local environment 
+	•	PostgreSQL – used as the transactional database. If not, steps to deploy are included.
+	•	ClickHouse – used for analytical queries. If not, steps to deploy are included.
+	•	ClickHouse MCP Server – acts as a bridge between the app and ClickHouse. If not, steps to deploy are included.
+	•	Node.js 20+ – required to run the frontend and backend.
+	•	Anthropic API key – used for AI-assisted features.
 
-## Deploy Postgres locally
+# Local setup
 
-If you don't have access to a PostgreSQL instance, you can run it locally using Docker. 
+## PostgreSQL
+
+PostgreSQL is required to store the application data.
+
+If you don’t already have a PostgreSQL instance, you can spin one up locally with Docker:
 
 ```
 docker volume create pgdata
@@ -31,9 +47,15 @@ docker run -d \
   postgres:16
 ```
 
-## Deploy ClickHouse locally
+This will create a persistent volume for your database and expose it on port 5432.
 
-If you don't have access to a ClickHouse instance, you can install it locally easily. 
+## ClickHouse
+
+By default, ClickHouse is not used. 
+
+Part of the demo story is to synchronize PostgreSQL and ClickHouse using ClickPipes or PeerDB to understand how faster the analytical queries are executed using ClickHouse. 
+
+If you don’t already have a ClickHouse instance, you can install it locally easily. 
 
 ```
 curl https://clickhouse.com/ | sh
@@ -45,14 +67,16 @@ curl https://clickhouse.com/ | sh
 
 Run the ClickHouse MCP server locally, and connect it to your ClickHouse instance.
 
+Clone the repository: 
+
 ```
 git clone https://github.com/ClickHouse/mcp-clickhouse.git
 cp mcp-clickhouse/
 ```
 
-We'll run the MCP Server locally using `fastmcp` to enable sse endpoint. 
+Run the MCP Server locally using `fastmcp` to enable `sse` endpoint. 
 
-You first might need to install `uv`, then install `fastmcp` in a virtual environment.
+If necessary, install `uv`, then install `fastmcp` in a virtual environment.
 
 ```
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -63,6 +87,8 @@ uv sync
 
 fastmcp run mcp_clickhouse/mcp_server.py:mcp --transport sse
 ```
+
+This starts the MCP server connected to your local ClickHouse instance.
 
 # Generate data 
 
@@ -90,9 +116,11 @@ python scripts/generate_data.py
 
 After the script execution, the data will be available in the `data/uk_house_listings.csv` file. 
 
-# Populate data in PostgreSQL
+# Load data into PostgreSQL
 
 ## Create tables
+
+Execute this command to create the tables:
 
 ```
 psql "host=localhost port=5432 dbname=postgres user=postgres password=postgres" -f schemas/postgres.sql 
@@ -100,24 +128,23 @@ psql "host=localhost port=5432 dbname=postgres user=postgres password=postgres" 
 
 ## Insert data
 
-To run the python script, make sure you have Python installed. 
+The dataset is too large for GitHub, so you’ll need to fetch it and import manually.
 
-Let's first prepare the environment and install dependencies. 
+1. Set up a Python environment:
 
 ```
 uv venv
 source .venv/bin/activate
-
 uv pip install -r scripts/requirements.txt
 ```
 
-Download the uk transactions, this file was too big to store in the github repository. 
+2. Download the UK transactions dataset:
 
 ```
 wget --no-check-certificate --no-proxy  https://storage.googleapis.com/clickhouse-demo-public/uk_price_paid.csv
 ```
 
-Run the script to insert the data. It might takes a few minutes.
+3. Import data into PostgreSQL:
 
 ```
 export POSTGRES_PASSWORD=postgres
@@ -129,7 +156,12 @@ export POSTGRES_POST=5432
 python3 scripts/import_data.py
 ```
 
+This may take a few minutes depending on your machine.
+
 # Run the application
+
+Once the databases and data are ready, you can start the application.
+
 
 ## Install dependencies
 
@@ -140,7 +172,11 @@ npm install
 
 ## Copy images
 
-Copy images from the `images/` directory to the `app/public/images/` directory.
+The frontend expects images in app/public/images. Copy them manually:
+
+```
+cp images/* app/public/images/
+```
 
 ## Configuration application
 
