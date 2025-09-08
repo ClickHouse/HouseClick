@@ -12,7 +12,7 @@ This is V2 of the demo. For the earlier version, see the [archive](archive) dire
 - PRs welcome to improve the code.
 - Due to concerns regards image writes, we do not provide a generated dataset. Steps to generate are included.
 
-![House Click](./house_click.png)
+![House Click](./house-click.png)
 
 # Requirements
 
