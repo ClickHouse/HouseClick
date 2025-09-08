@@ -1,0 +1,9 @@
+.DS_Store
+.idea/*
+.vscode/**
+data/**
+.env
+
+.venv
+__pycache__
+house_prices.csv

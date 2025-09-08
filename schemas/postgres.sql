@@ -16,22 +16,14 @@ CREATE TABLE uk_house_listings
    is_new SMALLINT,
    price INTEGER,
    rooms SMALLINT,
+   bathrooms SMALLINT,
    title text,
    description text,
    urls Text[],
    sold boolean,
    sold_date Date,
    features text
-)
-
-
-alter table
-  uk_house_listings
-add column
-  fts tsvector generated always as (to_tsvector('english', description || ' ' || title || ' ' || postcode1 || ' '|| postcode2)) stored;
-
-create index listings_fts on uk_house_listings using gin (fts); -- generate the index
-
+);
 
 CREATE TABLE uk_price_paid (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -50,6 +42,3 @@ CREATE TABLE uk_price_paid (
     district TEXT,
     county TEXT
 );
-
--- Indexes for optimizing queries
-CREATE INDEX idx_uk_price_paid_postcode ON uk_price_paid (postcode1, postcode2, addr1, addr2);
