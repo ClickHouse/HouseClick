@@ -1,0 +1,14 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="bathtub" clip-path="url(#clip0_30_700)">
+<path id="Vector" d="M4.5 12V13.5" stroke="#FAFF69" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_2" d="M11.5 12V13.5" stroke="#FAFF69" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M12.5 6H8.5V9H12.5V6Z" stroke="#FAFF69" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M12.5 6.5H15V9C15 9.79565 14.6839 10.5587 14.1213 11.1213C13.5587 11.6839 12.7956 12 12 12H4C3.20435 12 2.44129 11.6839 1.87868 11.1213C1.31607 10.5587 1 9.79565 1 9V6.5H8.5" stroke="#FAFF69" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_5" d="M3.5 6.5V3.25C3.5 2.91848 3.6317 2.60054 3.86612 2.36612C4.10054 2.1317 4.41848 2 4.75 2C5.04111 1.99932 5.32373 2.09808 5.55105 2.27994C5.77837 2.4618 5.93676 2.71584 6 3" stroke="#FAFF69" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_30_700">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>

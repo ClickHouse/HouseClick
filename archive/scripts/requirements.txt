@@ -1,4 +1,4 @@
-aiohttp>=3.9.5,<4
+aiohttp==3.8.5
 aiosignal==1.3.1
 anyio==3.6.2
 async-timeout==4.0.2
@@ -14,7 +14,7 @@ colorama==0.4.6
 deprecation==2.1.0
 docutils==0.19
 dotty-dict==1.3.1
-frozenlist>=1.4.1
+frozenlist==1.3.3
 gitdb==4.0.10
 GitPython==3.1.32
 gotrue==1.0.1
@@ -28,8 +28,8 @@ jaraco.classes==3.2.3
 keyring==23.13.1
 lz4==4.3.2
 more-itertools==9.1.0
-multidict>=6.0.5
-numpy==1.26.4
+multidict==6.0.4
+numpy==1.24.2
 openai==0.27.4
 packaging==23.1
 pkginfo==1.9.6
@@ -60,13 +60,7 @@ typing-extensions==4.5.0
 urllib3==1.26.15
 webencodings==0.5.1
 websockets==10.4
-yarl>=1.9.4
+yarl==1.8.2
 zipp==3.15.0
 zstandard==0.21.0
 psycopg
-numpy
-pandas
-faker
-tqdm
-clickhouse-connect
-pqdm

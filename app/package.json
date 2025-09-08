@@ -1,0 +1,49 @@
+{
+  "name": "house-click",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clickhouse/click-ui": "^0.0.204",
+    "@clickhouse/client": "^1.11.0",
+    "@headlessui/react": "^2.2.1",
+    "@heroicons/react": "^2.0.17",
+    "@types/pg": "^8.11.11",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.2",
+    "next": "^14.0.0",
+    "pg": "^8.14.1",
+    "radix-ui": "^1.2.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.1",
+    "react-tabs": "^6.1.0",
+    "styled-components": "^6.1.17",
+    "@copilotkit/react-core": "^1.8.9",
+    "@copilotkit/react-ui": "^1.8.9",
+    "@copilotkit/runtime": "^1.8.9",
+    "@modelcontextprotocol/sdk": "^1.11.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19.1.1",
+    "@types/react-dom": "^19.1.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.4",
+    "postcss": "^8.5.3",
+    "react-icons": "^4.8.0",
+    "react-range-slider-input": "^3.0.7",
+    "tailwindcss": "^4.1.1",
+    "typescript": "^5"
+  }
+}
