@@ -1,14 +1,9 @@
-import { createClient, DataFormat } from '@clickhouse/client'
+
 import { Pool } from 'pg';
 import { AnalyticFilter } from "@/lib/types";
-import { postgreSQLQueries, clickHouseQueries, clickHouseQueriesLarge } from "@/lib/analytics_queries";
+import { postgreSQLQueries } from "@/lib/analytics_queries";
 import { getDbSelection, getDatasetSelection } from './db-context'
 
-const clickhouse = createClient({
-    host: process.env.CLICKHOUSE_HOST ?? 'http://localhost:8123',
-    username: process.env.CLICKHOUSE_USER ?? 'default',
-    password: process.env.CLICKHOUSE_PASSWORD ?? '',
-})
 
 const pool = new Pool({
     user: process.env.POSTGRES_USER,
@@ -217,15 +212,7 @@ async function runQuery(name: string, query: string) {
     // Create the actual query promise
     const executeQuery = async () => {
         let rawResults: Record<string, any>[];
-        if (database === 'clickhouse') {
-            // queryString = dataset === 'large' ? query.replace('uk.uk_price_paid', 'uk.uk_price_paid_synthetic') : query
-            const results = await clickhouse.query({
-                query: queryString,
-                format: 'JSONEachRow',
-                clickhouse_settings: {'enable_parallel_replicas': 1, 'use_query_condition_cache': 1}
-            })
-            rawResults = await results.json();
-        } else if (database === 'postgres') {
+       if (database === 'postgres') {
             try {
                 const result = await pool.query(queryString);
                 rawResults = result.rows;
@@ -261,17 +248,7 @@ async function runQuery(name: string, query: string) {
 
 function getQuery(queryName: string) {
     const database = getDbSelection()
-    const dataset = getDatasetSelection()
-    if (database === 'clickhouse') {
-        if (dataset === 'large') {
-            const query = clickHouseQueriesLarge[queryName]
-            return query; 
-        } else { 
-            const query = clickHouseQueries[queryName]
-            return query; 
-    }
-        
-    } else if (database === 'postgres') {
+    if (database === 'postgres') {
         const query = postgreSQLQueries[queryName]
         return query;
     } else {

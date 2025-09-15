@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@clickhouse/click-ui": "^0.0.204",
-    "@clickhouse/client": "^1.11.0",
     "@headlessui/react": "^2.2.1",
     "@heroicons/react": "^2.0.17",
     "@types/pg": "^8.11.11",
