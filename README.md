@@ -32,7 +32,7 @@ PostgreSQL is required to store the application data.
 
 If you don’t already have a PostgreSQL instance, you can spin one up locally with Docker:
 
-```
+```sh
 docker volume create pgdata
 
 docker run -d \
@@ -57,7 +57,7 @@ Part of the demo story is to synchronize PostgreSQL and ClickHouse using ClickPi
 
 If you don’t already have a ClickHouse instance, you can install it locally easily. 
 
-```
+```sh
 curl https://clickhouse.com/ | sh
 
 ./clickhouse server
@@ -69,7 +69,7 @@ Run the ClickHouse MCP server locally, and connect it to your ClickHouse instanc
 
 Clone the repository: 
 
-```
+```sh
 git clone https://github.com/ClickHouse/mcp-clickhouse.git
 cp mcp-clickhouse/
 ```
@@ -78,7 +78,7 @@ Run the MCP Server locally using `fastmcp` to enable `sse` endpoint.
 
 If necessary, install `uv`, then install `fastmcp` in a virtual environment.
 
-```
+```sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv install fastmcp
 
@@ -98,7 +98,7 @@ The UK house listings are fake data generated using AI. Fresh data can be genera
 
 You can configure the connection using environment variables: 
 
-```
+```sh
 export CLICKHOUSE_HOST=sql-clickhouse.clickhouse.com
 export CLICKHOUSE_PORT=443
 export CLICKHOUSE_USER=demo
@@ -110,7 +110,7 @@ export NUMBER_LISTINGS=50
 
 Then, you can then run the script to generate the data:
 
-```
+```sh
 python scripts/generate_data.py
 ```
 
@@ -122,7 +122,7 @@ After the script execution, the data will be available in the `data/uk_house_lis
 
 Execute this command to create the tables:
 
-```
+```sh
 psql "host=localhost port=5432 dbname=postgres user=postgres password=postgres" -f schemas/postgres.sql 
 ```
 
@@ -132,7 +132,7 @@ The dataset is too large for GitHub, so you’ll need to fetch it and import man
 
 1. Set up a Python environment:
 
-```
+```sh
 uv venv
 source .venv/bin/activate
 uv pip install -r scripts/requirements.txt
@@ -140,19 +140,14 @@ uv pip install -r scripts/requirements.txt
 
 2. Download the UK transactions dataset:
 
-```
-wget --no-check-certificate --no-proxy  https://storage.googleapis.com/clickhouse-demo-public/uk_price_paid.csv
+```sh
+(cd data && curl -LO https://storage.googleapis.com/clickhouse-demo-public/uk_price_paid.csv)
 ```
 
 3. Import data into PostgreSQL:
 
-```
-export POSTGRES_PASSWORD=postgres
-export POSTGRES_USER=postgres
-export POSTGRES_DB=postgres
-export POSTGRES_HOST=localhost
-export POSTGRES_POST=5432
-
+```sh
+export POSTGRES_CONN_STR=postgresql://postgres:postgres@localhost/postgres
 python3 scripts/import_data.py
 ```
 
@@ -162,10 +157,9 @@ This may take a few minutes depending on your machine.
 
 Once the databases and data are ready, you can start the application.
 
-
 ## Install dependencies
 
-```
+```sh
 cd app
 npm install 
 ```
@@ -174,7 +168,7 @@ npm install
 
 The frontend expects images in app/public/images. Copy them manually:
 
-```
+```sh
 cp images/* app/public/images/
 ```
 
@@ -182,7 +176,7 @@ cp images/* app/public/images/
 
 Copy the `.env.example` file to `.env` and configure the environment variables.
 
-```
+```sh
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_HOST=localhost
@@ -201,9 +195,8 @@ ANTHROPIC_API_KEY=<your-anthropic-api-key>
 
 Run the app locally
 
-```
+```sh
 npm run dev
 ```
 
 Access the application at http://localhost:3000
-

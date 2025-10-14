@@ -1,25 +1,14 @@
 import csv
 import os
-import psycopg2
+import psycopg
 from datetime import datetime
 from pathlib import Path
 
 # Get the directory where this script is located
 SCRIPT_DIR = Path(__file__).parent.absolute()
 
-# Load PostgreSQL connection details from environment variables
-db_host = os.environ.get("POSTGRES_HOST", "localhost")
-db_name = os.environ.get("POSTGRES_DB")
-db_user = os.environ.get("POSTGRES_USER")
-db_password = os.environ.get("POSTGRES_PASSWORD")
-
 # Connect to PostgreSQL
-conn = psycopg2.connect(
-    host=db_host,
-    database=db_name,
-    user=db_user,
-    password=db_password
-)
+conn = psycopg.connect(os.environ.get("POSTGRES_CONN_STR", ""))
 
 def import_listings():
     cursor = conn.cursor()
