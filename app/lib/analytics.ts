@@ -225,7 +225,9 @@ async function runQuery(name: string, query: string) {
                 clickhouse_settings: {'enable_parallel_replicas': 1, 'use_query_condition_cache': 1}
             })
             rawResults = await results.json();
-        } else if (database === 'postgres') {
+        } else if (database === 'postgres' || database === 'fdw') {
+            const schema = database === 'fdw' ? 'fdw' : 'public'
+            queryString = queryString.replace(/FROM\s+uk/, `FROM ${schema}.uk`)
             try {
                 const result = await pool.query(queryString);
                 rawResults = result.rows;
@@ -271,7 +273,7 @@ function getQuery(queryName: string) {
             return query; 
     }
         
-    } else if (database === 'postgres') {
+    } else if (database === 'postgres' || database === 'fdw') {
         const query = postgreSQLQueries[queryName]
         return query;
     } else {
