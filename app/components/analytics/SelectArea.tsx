@@ -84,7 +84,8 @@ export default function SelectArea({ postCode, district, town, database, dataset
             router.replace('/analytics?' + createQueryString([{"key": 'database', "value": "clickhouse"}, {"key": 't', "value": new Date().getTime().toString()}]));
         } else {
             // invalidateCache()
-            router.replace('/analytics?' + createQueryString([{"key": 'database', "value": "postgres"}, {"key": 't', "value": new Date().getTime().toString()}]));
+            const val = value == 'fdw' ? 'fdw' : 'postgres'
+            router.replace('/analytics?' + createQueryString([{"key": 'database', "value": val}, {"key": 't', "value": new Date().getTime().toString()}]));
         }
     }
 
@@ -217,7 +218,22 @@ export default function SelectArea({ postCode, district, town, database, dataset
                                                 height={16} />
                                 </div>
                                     </button>
-                    
+
+                                    <button
+                                        className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${database === 'fdw'
+                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                            : 'border rounded-md bg-transparent border-transparent'
+                                            }`}
+                                        onClick={() => handleDatabaseChange('fdw')}
+                                    ><div className="flex items-center justify-center gap-2 px-[16px]">
+                                            <Image
+                                                src="/icons/postgres.svg"
+                                                alt="postgres"
+                                                width={16}
+                                                height={16} />
+                                     </div>
+                                    </button>
+
                                     <button
                                         className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${database === 'clickhouse'
                                             ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
