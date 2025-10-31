@@ -8,7 +8,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent.absolute()
 
 # Connect to PostgreSQL
-conn = psycopg.connect(os.environ.get("POSTGRES_CONN_STR", ""))
+conn = psycopg.connect(os.environ.get("POSTGRES_CONN_STR", ""), autocommit=True)
 
 def import_listings():
     cursor = conn.cursor()
@@ -61,6 +61,7 @@ def import_listings():
     # Commit and close connection
     conn.commit()
     cursor.close()
+    conn.execute("VACUUM ANALYZE uk_house_listings")
     print(f"Successfully imported {total_rows} listings into uk_property_listings table")
 
 def import_transactions(): 
@@ -112,6 +113,7 @@ def import_transactions():
         print(f"Final batch of {len(data_batch)} rows inserted")
 
     cursor.close()
+    conn.execute("VACUUM ANALYZE uk_price_paid")
     print(f"Successfully imported {total_rows} total rows into uk_price_paid table")
 
 

@@ -2,20 +2,20 @@
 /* eslint-disable */
 export const postgreSQLQueries: Record<string, Function> = {
     soldOverTime: (condition: string, column: string) => `SELECT
-                        to_char(DATE_TRUNC('year', date), 'YYYY-MM-DD') AS year,
-                        COUNT(*) FILTER (WHERE ${condition})::INT AS filtered_count,
+                        DATE_TRUNC('year', date)::date AS year,
+                        COUNT(1) FILTER (WHERE ${condition})::INT AS filtered_count,
                         ROUND(COUNT(*)::NUMERIC / COUNT(DISTINCT ${column}))::INT AS count
                     FROM uk_price_paid
                     GROUP BY year
                     ORDER BY year ASC;`,
     soldOverTimeNoFilter: () => `SELECT
-                    to_char(DATE_TRUNC('year', date), 'YYYY-MM-DD') AS year,
+                    DATE_TRUNC('year', date)::date AS year,
                     ROUND(COUNT(*)::NUMERIC / COUNT(DISTINCT town))::INT AS count
                 FROM uk_price_paid
                 GROUP BY year
                 ORDER BY year ASC;`,
     priceOverTime: (condition: string) => `SELECT
-                    to_char(date_trunc('month', date), 'YYYY-MM-DD') AS month,
+                    date_trunc('month', date)::date AS month,
                     round(avg(price) FILTER (WHERE ${condition})) AS filter_price,
                     round(avg(price)) AS avg
                 FROM uk_price_paid
@@ -32,7 +32,7 @@ export const postgreSQLQueries: Record<string, Function> = {
     priceIncrease: (condition: string) => `SELECT
                     round(avg(price) FILTER (WHERE ${condition})) AS filter_avg,
                     round(avg(price)) AS avg,
-                    EXTRACT(YEAR FROM date) AS year
+                    date_part('year', date) AS year
                 FROM uk_price_paid
                 GROUP BY year
                 ORDER BY year ASC;`,
@@ -44,14 +44,14 @@ export const postgreSQLQueries: Record<string, Function> = {
             WHERE date > current_date - INTERVAL '6 months';`,
     numberByDuration: (condition: string) => `SELECT
                 duration as name,
-                count(*) FILTER (WHERE ${condition})::int AS value
+                count(1) FILTER (WHERE ${condition})::int AS value
             FROM uk_price_paid
             WHERE duration = 'freehold' OR duration = 'leasehold'
             GROUP BY duration;`,
     numberByType: (condition: string, column: string) => `SELECT
             type,
-            count(*) FILTER (WHERE ${condition})::int AS filtered_count,
-            round(count(*)::numeric / COUNT(DISTINCT ${column})) AS count
+            count(1) FILTER (WHERE ${condition})::int AS filtered_count,
+            round(count(*)::numeric / COUNT(DISTINCT ${column}))::int AS count
         FROM uk_price_paid
         GROUP BY type;`,
     soldByPeriod: (condition: string) => `SELECT 
@@ -76,7 +76,7 @@ export const postgreSQLQueries: Record<string, Function> = {
             FROM uk_price_paid
             GROUP BY type;`,
     salesByDayPreviousYear: (condition: string) => `SELECT
-                EXTRACT(YEAR FROM date) AS year,
+                date_part('year', date) AS year,
                 date_trunc('day', date) AS day,
                 count(*) AS c
             FROM uk_price_paid
@@ -86,7 +86,7 @@ export const postgreSQLQueries: Record<string, Function> = {
             GROUP BY year, day
             ORDER BY year ASC, day ASC;`, 
     salesByDayCurrentYear: (condition: string) => `SELECT
-                EXTRACT(YEAR FROM date) AS year,
+                date_part('year', date) AS year,
                 date_trunc('day', date) AS day,
                 count(*) AS c
             FROM uk_price_paid
@@ -117,7 +117,7 @@ export const postgreSQLQueries: Record<string, Function> = {
     district, count(*) as popularity FROM uk_price_paid GROUP BY district ORDER BY popularity DESC LIMIT 10`,
     getPopularPostcodes: (town: string, district: string) => `SELECT 
     postcode1, count(*) as popularity FROM uk_price_paid WHERE town = '${town}' AND district = '${district}' AND postcode1 != '' GROUP BY district, town, postcode1 ORDER BY popularity DESC LIMIT 10`,
-    getHouseSales: (condition: string) => `SELECT count(*) FILTER (WHERE ${condition})::int AS area_count, count(*) as national_count FROM uk_price_paid`,
+    getHouseSales: (condition: string) => `SELECT count(1) FILTER (WHERE ${condition})::int AS area_count, count(*) as national_count FROM uk_price_paid`,
 }
 
 
