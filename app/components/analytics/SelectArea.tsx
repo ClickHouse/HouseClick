@@ -201,130 +201,130 @@ export default function SelectArea({ postCode, district, town, database, dataset
                             <Title align="center" type="h3">Advanced settings</Title>
                             <br />
                             <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-2">
-                            <Text className="w-[82px] text-[12px]">Database</Text>
-                            <div className="flex border rounded-md border-[#323232] w-[150px] h-[28px]">
-                                    <button
-                                        className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${database === 'postgres'
-                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                            : 'border rounded-md bg-transparent border-transparent'
-                                            }`}
-                                        onClick={() => handleDatabaseChange('postgres')}
-                                    ><div className="flex items-center justify-center gap-2 px-[16px]">
-                                            <Image
-                                                src="/icons/postgres.svg"
-                                                alt="postgres"
-                                                width={16}
-                                                height={16} />
-                                </div>
-                                    </button>
+                                <div className="flex items-center gap-2">
+                                    <Text className="w-[82px] text-[12px]">Database</Text>
+                                    <div className="flex border rounded-md border-[#323232] w-[220px] h-[28px]">
+                                        <button
+                                            className={`hover:cursor-pointer flex items-center w-[72px] gap-1 px-3 py-1  ${database === 'postgres'
+                                                ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                : 'border rounded-md bg-transparent border-transparent'
+                                                }`}
+                                            onClick={() => handleDatabaseChange('postgres')}
+                                        ><div className="flex items-center justify-center gap-2 px-[16px]">
+                                                <Image
+                                                    src="/icons/postgres.svg"
+                                                    alt="postgres"
+                                                    width={16}
+                                                    height={16} />
+                                            </div>
+                                        </button>
 
-                                    <button
-                                        className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${database === 'fdw'
-                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                            : 'border rounded-md bg-transparent border-transparent'
-                                            }`}
-                                        onClick={() => handleDatabaseChange('fdw')}
-                                    ><div className="flex items-center justify-center gap-2 px-[16px]">
-                                            <Image
-                                                src="/icons/postgres.svg"
-                                                alt="postgres"
-                                                width={16}
-                                                height={16} />
-                                     </div>
-                                    </button>
+                                        <button
+                                            className={`hover:cursor-pointer flex items-center w-[72px] gap-1 px-3 py-1  ${database === 'fdw'
+                                                ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                : 'border rounded-md bg-transparent border-transparent'
+                                                }`}
+                                            onClick={() => handleDatabaseChange('fdw')}
+                                        ><div className="flex items-end justify-center gap-1 px-[16px]">
+                                                <Image
+                                                    src="/icons/postgres.svg"
+                                                    alt="postgres"
+                                                    width={16}
+                                                    height={16} />
+                                                <p className="text-[8px] font-extralight">fdw</p>
+                                            </div>
+                                        </button>
 
-                                    <button
-                                        className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${database === 'clickhouse'
-                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                            : 'border rounded-md bg-transparent border-transparent'
-                                            }`}
-                                        onClick={() => handleDatabaseChange('clickhouse')}
-                                    >
-                                        <div className="flex items-center justify-center gap-2 px-[16px]">
-                                            <Image
-                                                src="/icons/clickhouse.svg"
-                                                alt="clickhouse"
-                                                width={16}
-                                                height={16} />
-                                            
-                                        </div>
-                                    </button>
-                                </div>
+                                        <button
+                                            className={`hover:cursor-pointer flex items-center w-[72px] gap-1 px-3 py-1  ${database === 'clickhouse'
+                                                ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                : 'border rounded-md bg-transparent border-transparent'
+                                                }`}
+                                            onClick={() => handleDatabaseChange('clickhouse')}
+                                        >
+                                            <div className="flex items-center justify-center gap-2 px-[16px]">
+                                                <Image
+                                                    src="/icons/clickhouse.svg"
+                                                    alt="clickhouse"
+                                                    width={16}
+                                                    height={16} />
+                                            </div>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Text className="w-[82px] text-[12px]">Debug</Text>
-                                    <div className="flex border rounded-md border-[#323232] w-[150px] h-[28px]">
-                                            <button
-                                                className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${!debug
-                                                    ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                                    : 'border rounded-md bg-transparent border-transparent'
-                                                    }`}
-                                                onClick={() => handleDebug('false')}
-                                            ><div className="flex items-center justify-center gap-2  px-[16px]">
+                                    <div className="flex border rounded-md border-[#323232] w-[220px] h-[28px]">
+                                        <button
+                                            className={`hover:cursor-pointer flex grow items-center gap-1 px-3 py-1  ${!debug
+                                                ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                : 'border rounded-md bg-transparent border-transparent'
+                                                }`}
+                                            onClick={() => handleDebug('false')}
+                                        ><div className="flex grow items-center justify-center gap-2  px-[16px]">
                                                 <p className="text-xs">Off</p>
-                                        </div>
-                                            </button>
-                            
-                                            <button
-                                                className={`hover:cursor-pointer flex items-center gap-1 px-3 py-1  ${debug
-                                                    ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                                    : 'border rounded-md bg-transparent border-transparent'
-                                                    }`}
-                                                onClick={() => handleDebug('true')}
-                                            >
-                                                <div className="flex items-center justify-center gap-2 px-[16px]">
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            className={`hover:cursor-pointer flex grow items-center gap-1 px-3 py-1   ${debug
+                                                ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                : 'border rounded-md bg-transparent border-transparent'
+                                                }`}
+                                            onClick={() => handleDebug('true')}
+                                        >
+                                            <div className="flex grow items-center justify-center gap-2 px-[16px]">
                                                 <p className="text-xs">On</p>
-                                                </div>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                    <Text className="w-[82px] text-[12px]">Dataset size</Text>
-                                    <div className="flex border rounded-md border-[#323232] w-[150px] h-[28px]">
-                                        <button
-                                        disabled={database === 'postgres'}
-                                        className={`flex items-center gap-1 px-3 py-1
-                                            ${dataset === 'normal' || database === 'postgres'
-                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                            : 'border rounded-md bg-transparent border-transparent'}
-                                            ${database === 'postgres' ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}
-                                        `}
-                                        onClick={() => handleDatasetChange('normal')}
-                                        >
-                                        <div className="flex items-center justify-center gap-2 px-[16px]">
-                                            <Image
-                                            src="/icons/medium.png"
-                                            alt="medium"
-                                            width={16}
-                                            height={16}
-                                            />
-                                        </div>
+                                            </div>
                                         </button>
-
-                                        <button
-                                        disabled={database === 'postgres'}
-                                        className={`flex items-center gap-1 px-3 py-1
-                                            ${dataset === 'large' && database === 'clickhouse'
-                                            ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
-                                            : 'border rounded-md bg-transparent border-transparent'}
-                                            ${database === 'postgres' ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}
-                                        `}
-                                        onClick={() => handleDatasetChange('large')}
-                                        >
-                                        <div className="flex items-center justify-center gap-2 px-[16px]">
-                                            <Image
-                                            src="/icons/xl.png"
-                                            alt="x-large"
-                                            width={16}
-                                            height={16}
-                                            />
-                                        </div>
-                                        </button>
-                                    </div>
-
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-2">
+                                    <Text className="w-[82px] text-[12px]">Dataset size</Text>
+                                    <div className="flex border rounded-md border-[#323232] w-[220px] h-[28px]">
+                                        <button
+                                            disabled={database === 'postgres'}
+                                            className={`flex grow items-center gap-1 px-3 py-1 
+                                            ${dataset === 'normal' || database === 'postgres'
+                                                    ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                    : 'border rounded-md bg-transparent border-transparent'}
+                                            ${database === 'postgres' ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}
+                                        `}
+                                            onClick={() => handleDatasetChange('normal')}
+                                        >
+                                            <div className="flex grow items-center justify-center gap-2 px-[16px]">
+                                                <Image
+                                                    src="/icons/medium.png"
+                                                    alt="medium"
+                                                    width={16}
+                                                    height={16}
+                                                />
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            disabled={database === 'postgres'}
+                                            className={`flex grow items-center gap-1 px-3 py-1 
+                                            ${dataset === 'large' && database === 'clickhouse'
+                                                    ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
+                                                    : 'border rounded-md bg-transparent border-transparent'}
+                                            ${database === 'postgres' ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}
+                                        `}
+                                            onClick={() => handleDatasetChange('large')}
+                                        >
+                                            <div className="flex grow items-center justify-center gap-2 px-[16px]">
+                                                <Image
+                                                    src="/icons/xl.png"
+                                                    alt="x-large"
+                                                    width={16}
+                                                    height={16}
+                                                />
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
                         </Popover.Content>
                     </Popover>
                     {/* <DebugIcon /> */}
