@@ -32,11 +32,11 @@ export const postgreSQLQueries: Record<string, Function> = {
     priceIncrease: (condition: string) => `SELECT
                     round(avg(price) FILTER (WHERE ${condition})) AS filter_avg,
                     round(avg(price)) AS avg,
-                    date_part('year', date) AS year
+                    EXTRACT(YEAR FROM date) AS year
                 FROM uk_price_paid
                 GROUP BY year
                 ORDER BY year ASC;`,
-    getRanks: (condition: string, quantiles: string) => `SELECT 
+    getRanks: (condition: string, quantiles: string) => `SELECT
                 percentile_cont(ARRAY[${quantiles}]) WITHIN GROUP (ORDER BY price) AS quantiles,
                 round(avg(price) FILTER (WHERE ${condition})) AS filtered_avg,
                 round(avg(price)) AS avg
@@ -54,7 +54,7 @@ export const postgreSQLQueries: Record<string, Function> = {
             round(count(*)::numeric / COUNT(DISTINCT ${column}))::int AS count
         FROM uk_price_paid
         GROUP BY type;`,
-    soldByPeriod: (condition: string) => `SELECT 
+    soldByPeriod: (condition: string) => `SELECT
                 count(*) FILTER (WHERE date >= current_date - INTERVAL '6 months') AS "6",
                 count(*) FILTER (WHERE date >= current_date - INTERVAL '12 months' AND date < current_date - INTERVAL '6 months') AS "12",
                 count(*) FILTER (WHERE date >= current_date - INTERVAL '18 months' AND date < current_date - INTERVAL '12 months') AS "18",
@@ -76,7 +76,7 @@ export const postgreSQLQueries: Record<string, Function> = {
             FROM uk_price_paid
             GROUP BY type;`,
     salesByDayPreviousYear: (condition: string) => `SELECT
-                date_part('year', date) AS year,
+                EXTRACT(YEAR FROM date) AS year,
                 date_trunc('day', date) AS day,
                 count(*) AS c
             FROM uk_price_paid
@@ -84,9 +84,9 @@ export const postgreSQLQueries: Record<string, Function> = {
             AND date >= date_trunc('year', current_date) - INTERVAL '1 year'
             AND date < date_trunc('year', current_date)
             GROUP BY year, day
-            ORDER BY year ASC, day ASC;`, 
+            ORDER BY year ASC, day ASC;`,
     salesByDayCurrentYear: (condition: string) => `SELECT
-                date_part('year', date) AS year,
+                EXTRACT(YEAR FROM date) AS year,
                 date_trunc('day', date) AS day,
                 count(*) AS c
             FROM uk_price_paid
@@ -111,15 +111,134 @@ export const postgreSQLQueries: Record<string, Function> = {
             round(percentile_cont(0.99) WITHIN GROUP (ORDER BY price)) AS max_price
         FROM uk_price_paid
         WHERE date > (current_date - interval '18 months') AND ${condition}`,
-    getPopularTowns: (district: string) => `SELECT 
+    getPopularTowns: (district: string) => `SELECT
     town, count(*) as popularity FROM uk_price_paid WHERE district = '${district}' GROUP BY district, town ORDER BY popularity DESC LIMIT 10`,
-    getPopularDistricts: () => `SELECT 
+    getPopularDistricts: () => `SELECT
     district, count(*) as popularity FROM uk_price_paid GROUP BY district ORDER BY popularity DESC LIMIT 10`,
-    getPopularPostcodes: (town: string, district: string) => `SELECT 
+    getPopularPostcodes: (town: string, district: string) => `SELECT
     postcode1, count(*) as popularity FROM uk_price_paid WHERE town = '${town}' AND district = '${district}' AND postcode1 != '' GROUP BY district, town, postcode1 ORDER BY popularity DESC LIMIT 10`,
     getHouseSales: (condition: string) => `SELECT count(1) FILTER (WHERE ${condition})::int AS area_count, count(*) as national_count FROM uk_price_paid`,
 }
 
+export const postgresFDWQueriesLarge: Record<string, Function> = {
+    soldOverTime: (condition: string, column: string) => `SELECT
+                        year,
+                        COUNT(count_state) FILTER (WHERE ${condition})::INT AS filtered_count,
+                        ROUND(COUNT(count_state)::NUMERIC / COUNT(DISTINCT ${column}))::INT AS count
+                    FROM houseclick.uk_price_paid_yearly_agg
+                    GROUP BY year
+                    ORDER BY year ASC;`,
+    soldOverTimeNoFilter: () => `SELECT
+                    DATE_TRUNC('year', date)::date AS year,
+                    ROUND(COUNT(*)::NUMERIC / COUNT(DISTINCT town))::INT AS count
+                FROM uk_price_paid_synthetic
+                GROUP BY year
+                ORDER BY year ASC;`,
+    priceOverTime: (condition: string) => `SELECT
+                    date_trunc('month', date)::date AS month,
+                    round(avg(price) FILTER (WHERE ${condition})) AS filter_price,
+                    round(avg(price)) AS avg
+                FROM uk_price_paid_synthetic
+                GROUP BY month
+                ORDER BY month ASC;`,
+    stats: (condition: string) => `SELECT
+                    avg(price) AS avg,
+                    percentile_cont(0.5) WITHIN GROUP (ORDER BY price) AS median,
+                    percentile_cont(0.95) WITHIN GROUP (ORDER BY price) AS "95th",
+                    percentile_cont(0.99) WITHIN GROUP (ORDER BY price) AS "99th",
+                    count(*) AS sold
+                FROM uk_price_paid_synthetic
+                WHERE date > current_date - INTERVAL '6 months' AND ${condition};`,
+    priceIncrease: (condition: string) => `SELECT
+                    round(avg(avg_price_state) FILTER (WHERE ${condition})) AS filter_avg,
+                    round(avg(avg_price_state)) AS avg,
+                    year
+                FROM houseclick.uk_price_paid_yearly_agg
+                GROUP BY year
+                ORDER BY year ASC;`,
+    getRanks: (condition: string, quantiles: string) => `SELECT
+                percentile_cont(ARRAY[${quantiles}]) WITHIN GROUP (ORDER BY price) AS quantiles,
+                round(avg(price) FILTER (WHERE ${condition})) AS filtered_avg,
+                round(avg(price)) AS avg
+            FROM uk_price_paid_synthetic
+            WHERE date > current_date - INTERVAL '6 months';`,
+    numberByDuration: (condition: string) => `SELECT
+                duration as name,
+                count(1) FILTER (WHERE ${condition})::int AS value
+            FROM uk_price_paid_synthetic
+            WHERE duration = 'freehold' OR duration = 'leasehold'
+            GROUP BY duration;`,
+    numberByType: (condition: string, column: string) => `SELECT
+            type,
+            count(1) FILTER (WHERE ${condition})::int AS filtered_count,
+            round(count(*)::numeric / COUNT(DISTINCT ${column}))::int AS count
+        FROM houseclick.uk_price_paid_type_agg
+        GROUP BY type;`,
+    soldByPeriod: (condition: string) => `SELECT
+                count(*) FILTER (WHERE date >= current_date - INTERVAL '6 months') AS "6",
+                count(*) FILTER (WHERE date >= current_date - INTERVAL '12 months' AND date < current_date - INTERVAL '6 months') AS "12",
+                count(*) FILTER (WHERE date >= current_date - INTERVAL '18 months' AND date < current_date - INTERVAL '12 months') AS "18",
+                count(*) FILTER (WHERE date >= current_date - INTERVAL '24 months' AND date < current_date - INTERVAL '18 months') AS "24"
+            FROM uk_price_paid_synthetic
+            WHERE ${condition};`,
+    priceByType: (condition: string) => `SELECT
+                type,
+                round(min(min_price_state)) + 100 AS min,
+                round(min(min_price_state) FILTER (WHERE ${condition})) AS min_filtered,
+                round(max(max_price_state)) AS max,
+                round(max(max_price_state) FILTER (WHERE ${condition})) AS max_filtered,
+                round(percentile_cont(0.5) WITHIN GROUP (ORDER BY quantile_price_state)) AS median,
+                round(percentile_cont(0.5) WITHIN GROUP (ORDER BY quantile_price_state) FILTER (WHERE ${condition})) AS median_filtered,
+                round(percentile_cont(0.25) WITHIN GROUP (ORDER BY quantile_price_state)) AS "25th",
+                round(percentile_cont(0.25) WITHIN GROUP (ORDER BY quantile_price_state) FILTER (WHERE ${condition})) AS "25th_filtered",
+                round(percentile_cont(0.75) WITHIN GROUP (ORDER BY quantile_price_state)) AS "75th",
+                round(percentile_cont(0.75) WITHIN GROUP (ORDER BY quantile_price_state) FILTER (WHERE ${condition})) AS "75th_filtered"
+            FROM houseclick.uk_price_paid_type_agg
+            GROUP BY type;`,
+    salesByDayPreviousYear: (condition: string) => `SELECT
+                EXTRACT(YEAR FROM date) AS year,
+                date_trunc('day', date) AS day,
+                count(*) AS c
+            FROM uk_price_paid_synthetic
+            WHERE ${condition}
+            AND date >= date_trunc('year', current_date) - INTERVAL '1 year'
+            AND date < date_trunc('year', current_date)
+            GROUP BY year, day
+            ORDER BY year ASC, day ASC;`,
+    salesByDayCurrentYear: (condition: string) => `SELECT
+                EXTRACT(YEAR FROM date) AS year,
+                date_trunc('day', date) AS day,
+                count(*) AS c
+            FROM uk_price_paid_synthetic
+            WHERE ${condition}
+            AND date >= date_trunc('year', current_date)
+            GROUP BY year, day
+            ORDER BY year ASC, day ASC;`,
+    soldByDuration: (condition: string) => `SELECT
+                duration AS name,
+                count(*) AS value
+            FROM uk_price_paid_synthetic
+            WHERE duration != 'unknown' AND ${condition}
+            GROUP BY duration;`,
+    soldByDurationNoFilter: (condition: string) => `SELECT
+                duration AS name,
+                count(*) AS value
+            FROM uk_price_paid_synthetic
+            WHERE duration != 'unknown'
+            GROUP BY duration;`,
+    getMinMax: (condition: string) => `SELECT
+            round(percentile_cont(0.01) WITHIN GROUP (ORDER BY price)) AS min_price,
+            round(percentile_cont(0.99) WITHIN GROUP (ORDER BY price)) AS max_price
+        FROM uk_price_paid_synthetic
+        WHERE date > (current_date - interval '18 months') AND ${condition}`,
+    getPopularTowns: (district: string) => `SELECT
+    town, count(*) as popularity FROM uk_price_paid_synthetic WHERE district = '${district}' GROUP BY district, town ORDER BY popularity DESC LIMIT 10`,
+    getPopularDistricts: () => `SELECT
+    district, count(*) as popularity FROM uk_price_paid_synthetic GROUP BY district ORDER BY popularity DESC LIMIT 10`,
+    getPopularPostcodes: (town: string, district: string) => `SELECT
+    postcode1, count(*) as popularity FROM uk_price_paid_synthetic WHERE town = '${town}' AND district = '${district}' AND postcode1 != '' GROUP BY district, town, postcode1 ORDER BY popularity DESC LIMIT 10`,
+    getHouseSales: (condition: string) => `SELECT count(1) FILTER (WHERE ${condition})::int AS area_count, count(*) as national_count FROM uk_price_paid_synthetic`,
+}
 
 export const clickHouseQueries: Record<string, Function> = {
     soldOverTime: (condition: string, column: string) => `SELECT
@@ -200,7 +319,7 @@ export const clickHouseQueries: Record<string, Function> = {
                 day
             ORDER BY
                 year ASC WITH FILL,
-                day ASC WITH FILL FROM toUnixTimestamp(CAST(toStartOfYear(now() - toIntervalYear(1)), 'DateTime')) TO toUnixTimestamp(CAST(toStartOfYear(now()), 'DateTime')) STEP toIntervalDay(1)`, 
+                day ASC WITH FILL FROM toUnixTimestamp(CAST(toStartOfYear(now() - toIntervalYear(1)), 'DateTime')) TO toUnixTimestamp(CAST(toStartOfYear(now()), 'DateTime')) STEP toIntervalDay(1)`,
     salesByDayCurrentYear: (condition: string) => `SELECT
                 toYear(date) AS year,
                 toStartOfDay(date) AS day,
@@ -220,11 +339,11 @@ export const clickHouseQueries: Record<string, Function> = {
                 round(quantile(0.99)(price)) AS \`max_price\`
             FROM uk.uk_price_paid
             WHERE date > (now() - toIntervalMonth(18)) AND ${condition}`,
-    getPopularTowns: (district: string) => `SELECT 
+    getPopularTowns: (district: string) => `SELECT
     town, count() as popularity FROM uk.uk_price_paid WHERE district = '${district}' GROUP BY town ORDER BY popularity DESC LIMIT 10`,
-    getPopularDistricts: () => `SELECT 
+    getPopularDistricts: () => `SELECT
     district, count() as popularity FROM uk.uk_price_paid GROUP BY district ORDER BY popularity DESC LIMIT 10`,
-    getPopularPostcodes: (town: string, district: string) => `SELECT 
+    getPopularPostcodes: (town: string, district: string) => `SELECT
     postcode1, count() as popularity FROM uk.uk_price_paid WHERE town = '${town}' AND district = '${district}' AND postcode1 != '' GROUP BY postcode1 ORDER BY popularity DESC LIMIT 10`,
     getPriceEvolution: (condition: string) => `SELECT
             toStartOfMonth(date) AS month,
@@ -315,7 +434,7 @@ export const clickHouseQueriesLarge: Record<string, Function> = {
                 day
             ORDER BY
                 year ASC WITH FILL,
-                day ASC WITH FILL FROM toUnixTimestamp(CAST(toStartOfYear(now() - toIntervalYear(1)), 'DateTime')) TO toUnixTimestamp(CAST(toStartOfYear(now()), 'DateTime')) STEP toIntervalDay(1)`, 
+                day ASC WITH FILL FROM toUnixTimestamp(CAST(toStartOfYear(now() - toIntervalYear(1)), 'DateTime')) TO toUnixTimestamp(CAST(toStartOfYear(now()), 'DateTime')) STEP toIntervalDay(1)`,
     salesByDayCurrentYear: (condition: string) => `SELECT
                 toYear(date) AS year,
                 toStartOfDay(date) AS day,
@@ -335,11 +454,11 @@ export const clickHouseQueriesLarge: Record<string, Function> = {
                 round(quantile(0.99)(price)) AS \`max_price\`
             FROM uk.uk_price_paid_synthetic
             WHERE date > (now() - toIntervalMonth(18)) AND ${condition}`,
-    getPopularTowns: (district: string) => `SELECT 
+    getPopularTowns: (district: string) => `SELECT
     town, count() as popularity FROM uk.uk_price_paid_synthetic WHERE district = '${district}' GROUP BY town ORDER BY popularity DESC LIMIT 10`,
-    getPopularDistricts: () => `SELECT 
+    getPopularDistricts: () => `SELECT
     district, count() as popularity FROM uk.uk_price_paid_synthetic GROUP BY district ORDER BY popularity DESC LIMIT 10`,
-    getPopularPostcodes: (town: string, district: string) => `SELECT 
+    getPopularPostcodes: (town: string, district: string) => `SELECT
     postcode1, count() as popularity FROM uk.uk_price_paid_synthetic WHERE town = '${town}' AND district = '${district}' AND postcode1 != '' GROUP BY postcode1 ORDER BY popularity DESC LIMIT 10`,
     getPriceEvolution: (condition: string) => `SELECT
             toStartOfMonth(date) AS month,

@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE uk_house_listings
 (
    id integer primary key,
@@ -42,3 +44,29 @@ CREATE TABLE uk_price_paid (
     district TEXT,
     county TEXT
 );
+
+CREATE EXTENSION clickhouse_fdw;
+
+-- Override default values from the environment.
+\set ch_host sql-clickhouse.clickhouse.com
+\getenv ch_host CLICKHOUSE_HOST
+\set ch_port 9440
+\getenv ch_port CLICKHOUSE_PORT
+\set ch_db uk
+\getenv ch_db CLICKHOUSE_DATABASE
+\set ch_user demo
+\getenv ch_user CLICKHOUSE_USER
+\set ch_pass
+\getenv ch_pass CLICKHOUSE_PASSWORD
+
+CREATE SERVER playground_svr FOREIGN DATA WRAPPER clickhouse_fdw
+    OPTIONS(driver 'binary', dbname :'ch_db', host :'ch_host', port :'ch_port');
+CREATE USER MAPPING FOR CURRENT_USER SERVER playground_svr OPTIONS (user :'ch_user', password :'ch_pass');
+
+CREATE SCHEMA uk;
+IMPORT FOREIGN SCHEMA uk FROM SERVER playground_svr INTO uk;
+
+CREATE SCHEMA houseclick;
+IMPORT FOREIGN SCHEMA houseclick FROM SERVER playground_svr INTO houseclick;
+
+COMMIT;

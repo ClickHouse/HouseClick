@@ -1,7 +1,7 @@
 import { createClient, DataFormat } from '@clickhouse/client'
 import { Pool } from 'pg';
 import { AnalyticFilter } from "@/lib/types";
-import { postgreSQLQueries, clickHouseQueries, clickHouseQueriesLarge } from "@/lib/analytics_queries";
+import { postgreSQLQueries, postgresFDWQueriesLarge, clickHouseQueries, clickHouseQueriesLarge } from "@/lib/analytics_queries";
 import { getDbSelection, getDatasetSelection } from './db-context'
 
 const clickhouse = createClient({
@@ -85,7 +85,7 @@ export async function getHouseSalesComparison({ town, district, postcode }: { to
 
 export async function getPriceEvolution({ town, district, postcode }: { town: string, district: string, postcode: string }) {
     const query = getQuery('priceOverTime');
-    
+
     const condition = buildCondition(town, district, postcode);
     const data = await runQuery('priceOverTime', query(condition))
     return data;
@@ -175,7 +175,7 @@ export async function getPriceByType( { town, district, postcode }: { town: stri
 
 
 export async function getHouseSoldOverTime({ town, district, postcode }: { town: string, district: string, postcode: string }) {
-    
+
     let conditions = [];
     let column = null
     let queryName = 'soldOverTimeNoFilter'
@@ -206,14 +206,14 @@ async function runQuery(name: string, query: string) {
     const dataset = getDatasetSelection()
     const start_time = performance.now();
     let queryString = query
-    
+
     // Create a promise that will reject after the timeout period
     const timeout = (ms: number) => {
         return new Promise((_, reject) => {
             setTimeout(() => reject(new Error(`Query execution timed out after ${ms/1000} seconds`)), ms);
         });
     };
-    
+
     // Create the actual query promise
     const executeQuery = async () => {
         let rawResults: Record<string, any>[];
@@ -226,7 +226,7 @@ async function runQuery(name: string, query: string) {
             })
             rawResults = await results.json();
         } else if (database === 'postgres' || database === 'fdw') {
-            const schema = database === 'fdw' ? 'fdw' : 'public'
+            const schema = database === 'fdw' ? 'uk' : 'public'
             queryString = queryString.replace(/FROM\s+uk/, `FROM ${schema}.uk`)
             try {
                 const result = await pool.query(queryString);
@@ -239,7 +239,7 @@ async function runQuery(name: string, query: string) {
         }
         return rawResults;
     };
-    
+
     let rawResults: Record<string, any>[];
     try {
         // Race the query execution against the timeout
@@ -252,7 +252,7 @@ async function runQuery(name: string, query: string) {
         console.error(`Error executing query "${name}":`, error.message);
         throw error;
     }
-    
+
     const endTime = performance.now();
     const elapsedTime = endTime - start_time;
     console.log(`Database: ${database} query: ${name} Execution time: ${elapsedTime} ms`)
@@ -267,15 +267,22 @@ function getQuery(queryName: string) {
     if (database === 'clickhouse') {
         if (dataset === 'large') {
             const query = clickHouseQueriesLarge[queryName]
-            return query; 
-        } else { 
+            return query;
+        } else {
             const query = clickHouseQueries[queryName]
-            return query; 
-    }
-        
-    } else if (database === 'postgres' || database === 'fdw') {
+            return query;
+        }
+    } else if (database === 'postgres') {
         const query = postgreSQLQueries[queryName]
         return query;
+    } else if (database === 'fdw') {
+        if (dataset === 'large') {
+            const query = postgresFDWQueriesLarge[queryName]
+            return query;
+        } else {
+            const query = postgreSQLQueries[queryName]
+            return query;
+        }
     } else {
         throw new Error('Unsupported database type')
     }
