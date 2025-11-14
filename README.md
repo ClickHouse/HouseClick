@@ -118,6 +118,10 @@ After the script execution, the data will be available in the `data/uk_house_lis
 
 # Load data into PostgreSQL
 
+## Install clickhouse_fdw
+
+TK
+
 ## Create tables
 
 Execute this command to create the tables:
