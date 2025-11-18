@@ -28,15 +28,18 @@ Before starting, make sure you have:
 
 ## PostgreSQL
 
-PostgreSQL is required to store the application data.
+PostgreSQL is required to store the application data and
+[pg_clickhouse](https://github.com/ClickHouse/pg_clickhouse/) is required to
+connect to ClickHouse from PostgreSQL.
 
-If you don’t already have a PostgreSQL instance, you can spin one up locally with Docker:
+If you don’t already have a PostgreSQL instance with pg_clickhouse, you can
+spin one up locally with Docker:
 
 ```sh
 docker volume create pgdata
 
 docker run -d \
-  --name postgres \
+  --name ghcr.io/clickhouse/pg_clickhouse:18 \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_DB=postgres \
@@ -99,13 +102,17 @@ The UK house listings are fake data generated using AI. Fresh data can be genera
 You can configure the connection using environment variables: 
 
 ```sh
-export CLICKHOUSE_HOST=sql-clickhouse.clickhouse.com
-export CLICKHOUSE_PORT=443
-export CLICKHOUSE_USER=demo
-export CLICKHOUSE_PASSWORD=
-export CLICKHOUSE_PROTO=https
-export OPENAI_API_KEY=
-export NUMBER_LISTINGS=50
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DATABASE=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
+CLICKHOUSE_HOST=https://sql-clickhouse.clickhouse.com
+CLICKHOUSE_PORT=9440
+CLICKHOUSE_DATABASE=uk
+CLICKHOUSE_USER=demo
+CLICKHOUSE_PASSWORD=
 ```
 
 Then, you can then run the script to generate the data:
@@ -118,9 +125,29 @@ After the script execution, the data will be available in the `data/uk_house_lis
 
 # Load data into PostgreSQL
 
+## Configuration application
+
+Copy the `.env.example` file to `.env` and configure the environment variables.
+
+```sh
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_HOST=localhost
+POSTGRES_DATABASE=postgres
+POSTGRES_PORT=5432
+CLICKHOUSE_HOST=http://localhost:8123
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=
+ANALYTICAL_DATABASE=postgres
+NEXT_PUBLIC_MCP_ENDPOINT=http://localhost:8000/sse
+NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL=/api/copilotkit
+ANTHROPIC_API_KEY=<your-anthropic-api-key>
+```
+
 ## Create tables
 
-Execute this command to create the tables:
+Execute this command to create the PostgreSQL tables and foreign tables that
+connect to ClickHouse:
 
 ```sh
 psql "host=localhost port=5432 dbname=postgres user=postgres password=postgres" -f schemas/postgres.sql 
@@ -170,25 +197,6 @@ The frontend expects images in app/public/images. Copy them manually:
 
 ```sh
 cp images/* app/public/images/
-```
-
-## Configuration application
-
-Copy the `.env.example` file to `.env` and configure the environment variables.
-
-```sh
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_HOST=localhost
-POSTGRES_DATABASE=postgres
-POSTGRES_PORT=5432
-CLICKHOUSE_HOST=http://localhost:8123
-CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=
-ANALYTICAL_DATABASE=postgres
-NEXT_PUBLIC_MCP_ENDPOINT=http://localhost:8000/sse
-NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL=/api/copilotkit
-ANTHROPIC_API_KEY=<your-anthropic-api-key>
 ```
 
 ## Start the application
