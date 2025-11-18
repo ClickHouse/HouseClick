@@ -305,7 +305,7 @@ export default function SelectArea({ postCode, district, town, database, dataset
                                         <button
                                             disabled={database === 'postgres'}
                                             className={`flex grow items-center gap-1 px-3 py-1 
-                                            ${dataset === 'large' && database === 'clickhouse'
+                                            ${dataset === 'large' && database !== 'postgres'
                                                     ? 'bg-[#2D2D2D] rounded-lg border border-[#FAFF69] text-white'
                                                     : 'border rounded-md bg-transparent border-transparent'}
                                             ${database === 'postgres' ? 'opacity-50 cursor-not-allowed' : 'hover:cursor-pointer'}
