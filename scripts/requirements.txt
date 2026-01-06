@@ -57,7 +57,7 @@ tomlkit==0.11.7
 tqdm==4.65.0
 twine==3.8.0
 typing-extensions==4.5.0
-urllib3==1.26.15
+urllib3==1.26.18
 webencodings==0.5.1
 websockets==10.4
 yarl>=1.9.4
