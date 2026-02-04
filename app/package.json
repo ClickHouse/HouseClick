@@ -29,7 +29,7 @@
     "@copilotkit/react-core": "^1.8.9",
     "@copilotkit/react-ui": "^1.8.9",
     "@copilotkit/runtime": "^1.8.9",
-    "@modelcontextprotocol/sdk": "^1.11.0"
+    "@modelcontextprotocol/sdk": "^1.26.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
