@@ -61,20 +61,32 @@ export const postgreSQLQueries: Record<string, Function> = {
                 count(*) FILTER (WHERE date >= current_date - INTERVAL '24 months' AND date < current_date - INTERVAL '18 months') AS "24"
             FROM uk_price_paid
             WHERE ${condition};`,
-    priceByType: (condition: string) => `SELECT
-                type,
-                round(min(price)) + 100 AS min,
-                round(min(price) FILTER (WHERE ${condition})) AS min_filtered,
-                round(max(price)) AS max,
-                round(max(price) FILTER (WHERE ${condition})) AS max_filtered,
-                round(percentile_cont(0.5) WITHIN GROUP (ORDER BY price)) AS median,
-                round(percentile_cont(0.5) WITHIN GROUP (ORDER BY price) FILTER (WHERE ${condition})) AS median_filtered,
-                round(percentile_cont(0.25) WITHIN GROUP (ORDER BY price)) AS "25th",
-                round(percentile_cont(0.25) WITHIN GROUP (ORDER BY price) FILTER (WHERE ${condition})) AS "25th_filtered",
-                round(percentile_cont(0.75) WITHIN GROUP (ORDER BY price)) AS "75th",
-                round(percentile_cont(0.75) WITHIN GROUP (ORDER BY price) FILTER (WHERE ${condition})) AS "75th_filtered"
-            FROM uk_price_paid
-            GROUP BY type;`,
+    priceByType: (condition: string) => `WITH filtered AS (
+                SELECT
+                    type,
+                    min(price)                                                AS min_price,
+                    max(price)                                                AS max_price,
+                    percentile_cont(0.5)  WITHIN GROUP (ORDER BY price)      AS p50_price,
+                    percentile_cont(0.25) WITHIN GROUP (ORDER BY price)      AS p25_price,
+                    percentile_cont(0.75) WITHIN GROUP (ORDER BY price)      AS p75_price
+                FROM uk_price_paid
+                WHERE ${condition}
+                GROUP BY type
+            )
+            SELECT
+                mv.type,
+                round(mv.min_price) + 100   AS min,
+                round(f.min_price)           AS min_filtered,
+                round(mv.max_price)          AS max,
+                round(f.max_price)           AS max_filtered,
+                round(mv.p50_price)          AS median,
+                round(f.p50_price)           AS median_filtered,
+                round(mv.p25_price)          AS "25th",
+                round(f.p25_price)           AS "25th_filtered",
+                round(mv.p75_price)          AS "75th",
+                round(f.p75_price)           AS "75th_filtered"
+            FROM uk_price_paid_type_summary mv
+            LEFT JOIN filtered f USING (type);`,
     salesByDayPreviousYear: (condition: string) => `SELECT
                 EXTRACT(YEAR FROM date) AS year,
                 date_trunc('day', date) AS day,
